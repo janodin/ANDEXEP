@@ -139,7 +139,7 @@ def home(request):
                 phq8=input_data['phq8'],
                 phq9=input_data['phq9'],
                 phq_score_total=phq_scores_sum,
-                is_suicide='Yes' if int(input_data['phq9']) != 0 else 'No',
+                # is_suicide='Yes' if int(input_data['phq9']) != 0 else 'No',
                 stress_level=stress_level,
                 recommendations=', '.join(recommendations)  # Convert list to string
             )

@@ -2,7 +2,7 @@ from django.db import models
 
 
 class StressLevelRecord(models.Model):
-    name = models.CharField(max_length=225)
+    name = models.CharField(max_length=100)
     age = models.IntegerField()
     gender = models.CharField(max_length=10)
     bmi_category = models.CharField(max_length=20)
