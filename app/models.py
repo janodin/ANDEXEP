@@ -1,8 +1,17 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-class StressLevelRecord(models.Model):
+class AppUser(AbstractUser):
     name = models.CharField(max_length=100)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
+class StressLevelRecord(models.Model):
+    user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
     age = models.IntegerField()
     gender = models.CharField(max_length=10)
     bmi_category = models.CharField(max_length=20)

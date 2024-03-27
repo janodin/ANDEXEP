@@ -1,6 +1,9 @@
 from django.contrib import messages
-from django.shortcuts import render
-from .forms import StressLevelForm
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from .forms import StressLevelForm, RegisterForm
 import joblib
 import pandas as pd
 from .models import StressLevelRecord
@@ -9,7 +12,8 @@ from .models import StressLevelRecord
 model = joblib.load('static/model/random_forest_model.joblib')
 
 
-def home(request):
+@login_required(login_url='login_user')
+def home_user(request):
     mild_reco = [
         'Practice deep breathing exercises',
         'Take short breaks to stretch and move around',
@@ -125,7 +129,7 @@ def home(request):
 
             # Save to database
             stress_level_record = StressLevelRecord(
-                name=input_data['name'],
+                user=request.user,
                 age=input_data['age'],
                 gender=gender_text,
                 bmi_category=bmi_category_text,
@@ -139,7 +143,7 @@ def home(request):
                 phq8=input_data['phq8'],
                 phq9=input_data['phq9'],
                 phq_score_total=phq_scores_sum,
-                # is_suicide='Yes' if int(input_data['phq9']) != 0 else 'No',
+                is_suicide='Yes' if int(input_data['phq9']) != 0 else 'No',
                 stress_level=stress_level,
                 recommendations=', '.join(recommendations)  # Convert list to string
             )
@@ -157,16 +161,63 @@ def home(request):
             if int(input_data['phq9']) != 0:
                 context['isSuicide'] = int(input_data['phq9'])
 
-            return render(request, 'home.html', context)
+            return render(request, 'home-user.html', context)
         else:
             # Form is not valid, re-render the page with the form
-            return render(request, 'home.html', {'form': form})
+            return render(request, 'home-user.html', {'form': form})
     else:
         form = StressLevelForm()
-        return render(request, 'home.html', {'form': form})
+        return render(request, 'home-user.html', {'form': form})
 
 
+@login_required(login_url='login_user')
 def show_record(request):
     stress_level_record = StressLevelRecord.objects.all()
 
     return render(request, 'show_record.html', {'stress_level_record': stress_level_record})
+
+
+def login_user(request):
+    if request.user.is_authenticated:  # Check if the user is already logged in
+        if request.user.is_superuser:  # Check if the user is a superuser
+            return redirect('show_record')
+        else:
+            return redirect('home_user')
+
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            if user.is_superuser:  # Check if the user is a superuser
+                return redirect('show_record')
+            else:
+                return redirect('home_user')
+        else:
+            return HttpResponse('Invalid login credentials')
+    return render(request, 'login.html')
+
+
+def register_user(request):
+    if request.user.is_authenticated:  # Check if the user is already logged in
+        if request.user.is_superuser:  # Check if the user is a superuser
+            return redirect('show_record')
+        else:
+            return redirect('home_user')
+
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login_user')  # Redirect to a home page or dashboard
+        else:
+            return HttpResponse('Invalid registration details')
+    else:
+        form = RegisterForm()
+    return render(request, 'register.html', {'form': form})
+
+
+def logout_user(request):
+    logout(request)  # Log the user out
+    return redirect('login_user')  # Redirect to login page or wherever you want
