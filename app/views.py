@@ -1,5 +1,3 @@
-import os
-from django.conf import settings
 from django.contrib import messages
 from django.shortcuts import render
 from .forms import StressLevelForm
@@ -8,11 +6,7 @@ import pandas as pd
 from .models import StressLevelRecord
 
 # Load the model (consider loading this only once, e.g., at app startup)
-# Construct the full file path for the model
-model_path = os.path.join(settings.BASE_DIR, 'static', 'model', 'random_forest_model.joblib')
-
-# Load the model from the constructed file path
-model = joblib.load(model_path)
+model = joblib.load('static_build/static/model/random_forest_model.joblib')
 
 
 def home(request):
