@@ -6,7 +6,7 @@ import pandas as pd
 from .models import StressLevelRecord
 
 # Load the model (consider loading this only once, e.g., at app startup)
-model = joblib.load('static_build/static/model/random_forest_model.joblib')
+model = joblib.load('staticfiles_build/static/model/random_forest_model.joblib')
 
 
 def home(request):
