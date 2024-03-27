@@ -2,10 +2,10 @@ from django.db import models
 
 
 class StressLevelRecord(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=255)
     age = models.IntegerField()
-    gender = models.CharField(max_length=10)
-    bmi_category = models.CharField(max_length=20)
+    gender = models.CharField(max_length=255)
+    bmi_category = models.CharField(max_length=255)
     phq1 = models.IntegerField()
     phq2 = models.IntegerField()
     phq3 = models.IntegerField()
@@ -16,6 +16,6 @@ class StressLevelRecord(models.Model):
     phq8 = models.IntegerField()
     phq9 = models.IntegerField()
     phq_score_total = models.IntegerField()
-    is_suicide = models.CharField(max_length=10)
-    stress_level = models.CharField(max_length=20)
+    is_suicide = models.CharField(max_length=255)
+    stress_level = models.CharField(max_length=255)
     recommendations = models.TextField()
