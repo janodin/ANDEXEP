@@ -221,3 +221,9 @@ def register_user(request):
 def logout_user(request):
     logout(request)  # Log the user out
     return redirect('login_user')  # Redirect to login page or wherever you want
+
+
+def delete_record(request, pk):
+    record = StressLevelRecord.objects.get(id=pk)
+    record.delete()
+    return redirect('show_record')

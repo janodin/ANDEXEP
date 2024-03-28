@@ -5,7 +5,7 @@
 
 {% if request.user.is_superuser %}
 <div class="d-flex justify-content-end me-2">
-    <a href="{% url 'logout_user' %}" type="button" class="btn btn-sm btn-danger">
+    <a href="{% url 'logout_user' %}" type="button" class="btn btn-sm btn-dark">
         Logout
     </a>
 </div>
@@ -17,8 +17,8 @@
         </caption>
         <thead class="table-success">
         <tr class="text-center">
-            <th scope="col">#</th>
             {% if request.user.is_superuser %}
+            <th scope="col">#</th>
             <th scope="col">Name</th>
             {% endif %}
             <th scope="col">Age</th>
@@ -37,14 +37,18 @@
             <th scope="col">Suicide</th>
             <th scope="col">Stress Level</th>
             <!--            <th scope="col">Recommendations</th>-->
+            <th scope="col">Date</th>
+            {% if request.user.is_superuser %}
+            <th scope="col">Action</th>
+            {% endif %}
         </tr>
         </thead>
         <tbody>
         {% for record in stress_level_record %}
         <tr class="text-center">
             {% if request.user == record.user or request.user.is_superuser %}
-            <th scope="row">{{ forloop.counter }}</th>
             {% if request.user.is_superuser %}
+            <th scope="row">{{ forloop.counter }}</th>
             <td>{{ record.user }}</td>
             {% endif %}
             <td>{{ record.age }}</td>
@@ -63,6 +67,13 @@
             <td>{{ record.is_suicide }}</td>
             <td>{{ record.stress_level }}</td>
             <!--            <td>{{ record.recommendations }}</td>-->
+            <td>{{ record.created }}</td>
+
+            {% if request.user.is_superuser %}
+            <td>
+                <a href="{% url 'delete_record' record.id %}" class="btn btn-sm btn-danger">Delete</a>
+            </td>
+            {% endif %}
             {% endif %}
         </tr>
         {% endfor %}

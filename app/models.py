@@ -28,3 +28,4 @@ class StressLevelRecord(models.Model):
     is_suicide = models.CharField(max_length=10)
     stress_level = models.CharField(max_length=20)
     recommendations = models.TextField()
+    created = models.DateField(auto_now_add=True)
